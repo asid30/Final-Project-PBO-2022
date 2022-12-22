@@ -30,6 +30,7 @@ function mousePressed(){
     Vx: 4,
     Vy: 4,
   }
+  bullets.pop(bullet);
   bullets.push(bullet);  
   
   const angle = Math.atan2(mouseY - height/2, mouseX - width/2);
