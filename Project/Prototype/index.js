@@ -64,3 +64,7 @@ class Hero extends Entity {
     }
 
 }
+
+const player = new Hero(30,30,cxCenter,cyCenter,'blue',100,0);
+player.draw();
+console.log(player);
