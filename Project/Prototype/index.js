@@ -67,8 +67,9 @@ class Hero extends Entity {
 
 class Monster extends Entity {
 
-    constructor(height, width, x, y, life, color, effect, type, velocity){
+    constructor(height, width, x, y, radius, life, color, effect, type, velocity){
         super(height, width, x, y)
+        this.radius = radius;
         this.life = life;
         this.color = color;
         this.effect = effect;
@@ -86,7 +87,7 @@ class Monster extends Entity {
 
     draw(){
         ctx.beginPath();
-        ctx.arc(this.x, this.y, this.height+this.width/2, 0, Math.PI*2, false);
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2, false);
         ctx.fillStyle = this.color;
         ctx.fill();
     }
@@ -138,7 +139,7 @@ function spawnMonster(){
         let y;
         const height = 30;
         const width = 30;
-        const radius = width+height/2;
+        const radius = Math.random() * (height+width/2 - 10) + 10;
         if(Math.random() < 0.5){
             x = Math.random() < 0.5 ? 0 - radius : canvas.width + radius;
             y = Math.random() * canvas.height;
@@ -151,7 +152,7 @@ function spawnMonster(){
         const angle = Math.atan2(canvas.height/2 - y, canvas.width/2 - x);
         const velocity = {x : Math.cos(angle), y : Math.sin(angle)};
 
-        monster.push(new Monster(height,width,x,y,100,color,null,null,velocity))}, 1000)
+        monster.push(new Monster(height,width,x,y,radius,100,color,null,null,velocity))}, 1000)
 }
 
 function animate(){
