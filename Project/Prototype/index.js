@@ -67,12 +67,13 @@ class Hero extends Entity {
 
 class Monster extends Entity {
 
-    constructor(height, width, x, y, life, color, effect, type){
+    constructor(height, width, x, y, life, color, effect, type, velocity){
         super(height, width, x, y)
         this.life = life;
         this.color = color;
         this.effect = effect;
         this.type = type;
+        this.velocity = velocity;
     }
 
     moveRandom(){
@@ -80,7 +81,20 @@ class Monster extends Entity {
     }
 
     saveScore(){
-        
+
+    }
+
+    draw(){
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.height+this.width/2, 0, Math.PI*2, false);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+    }
+
+    update(){
+        this.draw();
+        this.x = this.x + this.velocity.x;
+        this.y = this.y + this.velocity.y;
     }
 }
 
@@ -115,6 +129,29 @@ player.draw();
 console.log(player);
 
 const projectiles = [];
+const monster = [];
+
+function spawnMonster(){
+    setInterval(() => {
+        let x;
+        let y;
+        const height = 30;
+        const width = 30;
+        const radius = width+height/2;
+        if(Math.random() < 0.5){
+            x = Math.random() < 0.5 ? 0 - radius : canvas.width + radius;
+            y = Math.random() * canvas.height;
+        }else{
+            x = Math.random() * canvas.width;
+            y = Math.random() < 0.5 ? 0 - radius : canvas.height + radius;
+        }
+
+        const color = 'green';
+        const angle = Math.atan2(canvas.height/2 - y, canvas.width/2 - x);
+        const velocity = {x : Math.cos(angle), y : Math.sin(angle)};
+
+        monster.push(new Monster(height,width,x,y,100,color,null,null,velocity))}, 1000)
+}
 
 function animate(){
     requestAnimationFrame(animate);
@@ -130,3 +167,4 @@ window.addEventListener('click', (event) => {
     })
 
 animate();
+spawnMonster();
