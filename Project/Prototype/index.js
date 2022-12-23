@@ -5,7 +5,7 @@ canvas.width = innerWidth;
 canvas.height = innerHeight;
 
 class Entity {
-  
+
     constructor(height, width, x, y){
       this.height = height;
       this.width = width;
@@ -99,6 +99,7 @@ class Monster extends Entity {
 }
 
 class Projectile {
+    
     constructor(x, y, radius, color, velocity){
         this.x = x;
         this.y = y;
@@ -109,7 +110,7 @@ class Projectile {
 
     draw(){
         ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2, false);
         ctx.fillStyle = this.color;
         ctx.fill();
     }
@@ -158,6 +159,8 @@ function animate(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
     player.draw();
     projectiles.forEach(projectile => {projectile.update()})
+
+    monster.forEach(monster => {monster.update()})
 }
 
 window.addEventListener('click', (event) => {
