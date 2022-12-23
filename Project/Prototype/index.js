@@ -34,3 +34,33 @@ class Entity {
     }
     
 }
+
+class Hero extends Entity {
+
+    constructor(height, width, x, y, color, life, score){
+        super(height, width, x, y)
+        this.color = color;
+        this.life = life;
+        this.score = score;
+    }
+
+    increaseScore(){
+    
+    }
+    
+    calculateLife(){
+      
+    }
+    
+    saveScore(){
+      
+    }
+
+    draw(){
+        ctx.beginPath();
+        ctx.rect(this.x, this.y, this.width, this.height);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+    }
+
+}
