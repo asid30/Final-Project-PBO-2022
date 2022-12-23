@@ -131,7 +131,7 @@ player.draw();
 console.log(player);
 
 const projectiles = [];
-const monster = [];
+const monsters = [];
 
 function spawnMonster(){
     setInterval(() => {
@@ -152,7 +152,7 @@ function spawnMonster(){
         const angle = Math.atan2(canvas.height/2 - y, canvas.width/2 - x);
         const velocity = {x : Math.cos(angle), y : Math.sin(angle)};
 
-        monster.push(new Monster(height,width,x,y,radius,100,color,null,null,velocity))}, 1000)
+        monsters.push(new Monster(height,width,x,y,radius,100,color,null,null,velocity))}, 1000)
 }
 
 function animate(){
@@ -161,14 +161,23 @@ function animate(){
     player.draw();
     projectiles.forEach(projectile => {projectile.update()})
 
-    monster.forEach(monster => {monster.update()})
+    monsters.forEach((monster,index) => {monster.update()
+        projectiles.forEach((projectile,projectileIndex) => {
+            const dist = Math.hypot(projectile.x - monster.x, projectile.y - monster.y)
+            if(dist - monster.radius - projectile.radius < 1){
+                monsters.splice(index,1)
+                projectiles.splice(projectileIndex,1)
+            }
+        })                  
+    })
 }
 
 window.addEventListener('click', (event) => {
         const angle = Math.atan2(event.clientY - canvas.height/2, event.clientX - canvas.width/2);
-        const velocity = {x : Math.cos(angle), y : Math.sin(angle)}
+        const velocity = {x : Math.cos(angle)*8, y : Math.sin(angle)*8}
         projectiles.push(new Projectile(canvas.width/2,canvas.height/2,5,'red',velocity))
     })
 
 animate();
 spawnMonster();
+
