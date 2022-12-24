@@ -64,6 +64,10 @@ class Level {
         this.maxLevel = maxLevel;
     }
 
+    setLevel(){
+
+    }
+
 class Hero extends Entity {
 
     constructor(height, width, x, y, radius, color, life, score){
