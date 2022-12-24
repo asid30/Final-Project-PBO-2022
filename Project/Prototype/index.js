@@ -37,8 +37,9 @@ class Entity {
 
 class Hero extends Entity {
 
-    constructor(height, width, x, y, color, life, score){
+    constructor(height, width, x, y, radius, color, life, score){
         super(height, width, x, y)
+        this.radius = radius;
         this.color = color;
         this.life = life;
         this.score = score;
@@ -58,7 +59,7 @@ class Hero extends Entity {
 
     draw(){
         ctx.beginPath();
-        ctx.arc(this.x, this.y, this.height+this.width/2, 0, Math.PI*2, false);
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2, false);
         ctx.fillStyle = this.color;
         ctx.fill();
     }
@@ -126,7 +127,7 @@ class Projectile {
 const cxCenter = canvas.width / 2;
 const cyCenter = canvas.height / 2;
 
-const player = new Hero(20,20,cxCenter,cyCenter,'blue',100,0);
+const player = new Hero(20,20,cxCenter,cyCenter,20,'blue',100,0);
 player.draw();
 console.log(player);
 
@@ -155,13 +156,20 @@ function spawnMonster(){
         monsters.push(new Monster(height,width,x,y,radius,100,color,null,null,velocity))}, 1000)
 }
 
+let animationId;
 function animate(){
-    requestAnimationFrame(animate);
+    animationId = requestAnimationFrame(animate);
     ctx.clearRect(0,0,canvas.width,canvas.height);
     player.draw();
     projectiles.forEach(projectile => {projectile.update()})
 
-    monsters.forEach((monster,index) => {monster.update()
+    monsters.forEach((monster,index) => {
+        monster.update()
+        const dist = Math.hypot(player.x - monster.x, player.y - monster.y)
+        if(dist - monster.radius - player.radius < 1){
+            cancelAnimationFrame(animationId);
+        }
+
         projectiles.forEach((projectile,projectileIndex) => {
             const dist = Math.hypot(projectile.x - monster.x, projectile.y - monster.y)
             if(dist - monster.radius - projectile.radius < 1){
