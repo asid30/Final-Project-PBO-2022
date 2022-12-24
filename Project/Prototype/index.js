@@ -20,6 +20,11 @@ class Map {
 
     }
 
+    move(){
+        
+    }
+}
+
 class Entity {
 
     constructor(height, width, x, y){
@@ -50,7 +55,6 @@ class Entity {
     }
     
 }
-
 
 class Hero extends Entity {
 
