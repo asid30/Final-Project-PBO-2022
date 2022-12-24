@@ -5,6 +5,9 @@ canvas.width = innerWidth;
 canvas.height = innerHeight;
 
 const scoreEl = document.querySelector('#scoreEl');
+const startGameBtn = document.querySelector('#startGameBtn');
+const modalEl = document.querySelector('#modalEl');
+const bigScoreEl = document.querySelector('#bigScoreEl');
 
 class Entity {
 
@@ -104,6 +107,27 @@ class Monster extends Entity {
         this.y = this.y + this.velocity.y;
     }
 }
+
+class Particle {
+    
+    constructor(x, y, radius, color, velocity){
+        this.x = x;
+        this.y = y;
+        this.radius = radius;
+        this.color = color;
+        this.velocity = velocity;
+        this.alpha = 1;
+    }
+
+    draw(){
+        ctx.save();
+        ctx.globalAlpha = this.alpha;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2, false);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+        ctx.restore();
+    }
 
 class Particle {
     
