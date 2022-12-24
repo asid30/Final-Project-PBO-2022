@@ -68,6 +68,11 @@ class Level {
 
     }
 
+    getCurrentLevel(){
+
+    }
+}
+
 class Hero extends Entity {
 
     constructor(height, width, x, y, radius, color, life, score){
