@@ -159,7 +159,7 @@ function spawnMonster(){
 let animationId;
 function animate(){
     animationId = requestAnimationFrame(animate);
-    ctx.fillStyle = 'rgba(0,0,0,1)';
+    ctx.fillStyle = 'rgba(0,0,0,0.1)';
     ctx.fillRect(0,0,canvas.width,canvas.height);
     player.draw();
     projectiles.forEach((projectile, index) => {
@@ -181,10 +181,20 @@ function animate(){
         projectiles.forEach((projectile,projectileIndex) => {
             const dist = Math.hypot(projectile.x - monster.x, projectile.y - monster.y)
             if(dist - monster.radius - projectile.radius < 1){
-                setTimeout(() => {
-                    monsters.splice(index,1);
-                    projectiles.splice(projectileIndex,1);
-                }, 0)
+                if(monster.radius - 10 > 10){
+                    gsap.to(monster, {
+                        radius: monster.radius - 10
+                    })
+                    setTimeout(() => {
+                        projectiles.splice(projectileIndex,1);
+                    }, 0)
+                }else{
+                        setTimeout(() => {
+                        monsters.splice(index,1);
+                        projectiles.splice(projectileIndex,1);
+                    }, 0)
+                }
+
             }
         })                  
     })
