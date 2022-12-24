@@ -9,6 +9,13 @@ const startGameBtn = document.querySelector('#startGameBtn');
 const modalEl = document.querySelector('#modalEl');
 const bigScoreEl = document.querySelector('#bigScoreEl');
 
+class Map {
+
+    constructor(width, height){
+        this.width = width;
+        this.height = height;
+    }
+
 class Entity {
 
     constructor(height, width, x, y){
@@ -54,7 +61,6 @@ class Hero extends Entity {
         score += 1;
         scoreEl.innerHTML = score;
         this.score = score
-        console.log(this.score)
     }
     
     calculateLife(){
@@ -164,9 +170,9 @@ class Projectile {
 const cxCenter = canvas.width / 2;
 const cyCenter = canvas.height / 2;
 
-let projectiles = [];
-let monsters = [];
-let particles = [];
+let projectiles = []; //projectiles array
+let monsters = []; //monsters array
+let particles = []; //explosion particles array
 let player = new Hero(20,20,cxCenter,cyCenter,20,'white',100,0);
 
 function init(){
@@ -179,7 +185,7 @@ function init(){
     bigScoreEl.innerHTML = score;
 }
 
-function spawnMonster(){
+function spawnMonster(){    //make monster randomly for every 1 second
     setInterval(() => {
         let x;
         let y;
@@ -193,7 +199,6 @@ function spawnMonster(){
             x = Math.random() * canvas.width;
             y = Math.random() < 0.5 ? 0 - radius : canvas.height + radius;
         }
-
         const color = `hsl(${Math.random() * 360}, 100%, 50%)`;
         const angle = Math.atan2(canvas.height/2 - y, canvas.width/2 - x);
         const velocity = {x : Math.cos(angle), y : Math.sin(angle)};
@@ -203,11 +208,13 @@ function spawnMonster(){
 
 let animationId;
 let score = 0;
-function animate(){
+function animate(){     //make animation frame
     animationId = requestAnimationFrame(animate);
     ctx.fillStyle = 'rgba(0,0,0,0.1)';
     ctx.fillRect(0,0,canvas.width,canvas.height);
     player.draw();
+
+    //particle removed soon after explosion
     particles.forEach((particle, index) => {
         if(particle.alpha <= 0){
             particles.splice(index,1)
@@ -215,6 +222,8 @@ function animate(){
             particle.update();
         }
     })
+
+    //projectile removed after out of canvas
     projectiles.forEach((projectile, index) => {
         projectile.update();
         if(projectile.x + projectile.radius < 0 || projectile.x - projectile.radius > canvas.width || projectile.y + projectile.radius < 0 || projectile.y - projectile.radius > canvas.height){
@@ -224,6 +233,7 @@ function animate(){
         }
     })
 
+    //monster collision with player
     monsters.forEach((monster,index) => {
         monster.update()
         const dist = Math.hypot(player.x - monster.x, player.y - monster.y)
@@ -233,14 +243,19 @@ function animate(){
             bigScoreEl.innerHTML = score;
         }
 
+        //projectiles collision with monster
         projectiles.forEach((projectile,projectileIndex) => {
             const dist = Math.hypot(projectile.x - monster.x, projectile.y - monster.y)
             if(dist - monster.radius - projectile.radius < 1){
                 score += 1;
                 scoreEl.innerHTML = score;
+
+                //make particle when projectiles collide with monster
                 for(let i = 0; i < monster.radius*2; i++){
                     particles.push(new Particle(projectile.x, projectile.y, 3, monster.color, {x:(Math.random() - 0.5) * (Math.random() * 3), y:(Math.random() - 0.5) * (Math.random() * 3)}))
                 }
+
+                //monster shrink when projectiles collide with monster
                 if(monster.radius - 10 > 10){
                     gsap.to(monster, {
                         radius: monster.radius - 10
@@ -254,18 +269,19 @@ function animate(){
                         projectiles.splice(projectileIndex,1);
                     }, 0)
                 }
-
             }
         })                  
     })
 }
 
+//action on click
 window.addEventListener('click', (event) => {
         const angle = Math.atan2(event.clientY - canvas.height/2, event.clientX - canvas.width/2);
         const velocity = {x : Math.cos(angle)*5, y : Math.sin(angle)*5}
         projectiles.push(new Projectile(canvas.width/2,canvas.height/2,5,'white',velocity))
     })
 
+//action on start
 startGameBtn.addEventListener('click', () => {
     init();
     player.draw();
