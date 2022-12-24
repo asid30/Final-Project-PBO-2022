@@ -4,6 +4,9 @@ const ctx = canvas.getContext('2d');
 canvas.width = innerWidth;
 canvas.height = innerHeight;
 
+const scoreEl = document.querySelector('#scoreEl');
+console.log(scoreEl)
+
 class Entity {
 
     constructor(height, width, x, y){
@@ -12,7 +15,6 @@ class Entity {
       this.x = x;
       this.y= y;
     }
-    
     attack(){
       
     }
@@ -45,8 +47,11 @@ class Hero extends Entity {
         this.score = score;
     }
 
-    increaseScore(){
-    
+    increaseScore(score){
+        score += 1;
+        scoreEl.innerHTML = score;
+        this.score = score
+        console.log(this.score)
     }
     
     calculateLife(){
@@ -100,35 +105,6 @@ class Monster extends Entity {
     }
 }
 
-class Particle {
-    
-    constructor(x, y, radius, color, velocity){
-        this.x = x;
-        this.y = y;
-        this.radius = radius;
-        this.color = color;
-        this.velocity = velocity;
-        this.alpha = 1;
-    }
-
-    draw(){
-        ctx.save();
-        ctx.globalAlpha = this.alpha;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2, false);
-        ctx.fillStyle = this.color;
-        ctx.fill();
-        ctx.restore();
-    }
-
-    update(){
-        this.draw();
-        this.x = this.x + this.velocity.x;
-        this.y = this.y + this.velocity.y;
-        this.alpha -= 0.01;
-    }
-}
-
 class Projectile {
     
     constructor(x, y, radius, color, velocity){
@@ -162,7 +138,6 @@ console.log(player);
 
 const projectiles = [];
 const monsters = [];
-const particles = [];
 
 function spawnMonster(){
     setInterval(() => {
@@ -187,18 +162,12 @@ function spawnMonster(){
 }
 
 let animationId;
+let score = 0;
 function animate(){
     animationId = requestAnimationFrame(animate);
     ctx.fillStyle = 'rgba(0,0,0,0.1)';
     ctx.fillRect(0,0,canvas.width,canvas.height);
     player.draw();
-    particles.forEach((particle, index) => {
-        if(particle.alpha <= 0){
-            particles.splice(index,1)
-        }else{
-            particle.update();
-        }
-    })
     projectiles.forEach((projectile, index) => {
         projectile.update();
         if(projectile.x + projectile.radius < 0 || projectile.x - projectile.radius > canvas.width || projectile.y + projectile.radius < 0 || projectile.y - projectile.radius > canvas.height){
@@ -218,9 +187,12 @@ function animate(){
         projectiles.forEach((projectile,projectileIndex) => {
             const dist = Math.hypot(projectile.x - monster.x, projectile.y - monster.y)
             if(dist - monster.radius - projectile.radius < 1){
-                for(let i = 0; i < monster.radius*2; i++){
-                    particles.push(new Particle(projectile.x, projectile.y, 3, monster.color, {x:(Math.random() - 0.5) * (Math.random() * 3), y:(Math.random() - 0.5) * (Math.random() * 3)}))
-                }
+
+                //increase score
+                score += 1;
+                scoreEl.innerHTML = score;
+                console.log(this.score)
+
                 if(monster.radius - 10 > 10){
                     gsap.to(monster, {
                         radius: monster.radius - 10
