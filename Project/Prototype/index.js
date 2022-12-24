@@ -16,6 +16,10 @@ class Map {
         this.height = height;
     }
 
+    init(){
+
+    }
+
 class Entity {
 
     constructor(height, width, x, y){
@@ -46,6 +50,7 @@ class Entity {
     }
     
 }
+
 
 class Hero extends Entity {
 
