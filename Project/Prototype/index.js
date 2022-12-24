@@ -56,6 +56,14 @@ class Entity {
     
 }
 
+class Level {
+
+    constructor(currentLevel, latestLevel, maxLevel){
+        this.currentLevel = currentLevel;
+        this.latestLevel = latestLevel;
+        this.maxLevel = maxLevel;
+    }
+
 class Hero extends Entity {
 
     constructor(height, width, x, y, radius, color, life, score){
