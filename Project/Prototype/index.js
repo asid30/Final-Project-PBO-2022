@@ -129,27 +129,6 @@ class Particle {
         ctx.restore();
     }
 
-class Particle {
-    
-    constructor(x, y, radius, color, velocity){
-        this.x = x;
-        this.y = y;
-        this.radius = radius;
-        this.color = color;
-        this.velocity = velocity;
-        this.alpha = 1;
-    }
-
-    draw(){
-        ctx.save();
-        ctx.globalAlpha = this.alpha;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2, false);
-        ctx.fillStyle = this.color;
-        ctx.fill();
-        ctx.restore();
-    }
-
     update(){
         this.draw();
         this.x = this.x + this.velocity.x;
@@ -185,12 +164,20 @@ class Projectile {
 const cxCenter = canvas.width / 2;
 const cyCenter = canvas.height / 2;
 
-const player = new Hero(20,20,cxCenter,cyCenter,20,'white',100,0);
-player.draw();
+let projectiles = [];
+let monsters = [];
+let particles = [];
+let player = new Hero(20,20,cxCenter,cyCenter,20,'white',100,0);
 
-const projectiles = [];
-const monsters = [];
-const particles = [];
+function init(){
+    player = new Hero(20,20,cxCenter,cyCenter,20,'white',100,0);
+    projectiles = [];
+    monsters = [];
+    particles = [];
+    score = 0;
+    scoreEl.innerHTML = score;
+    bigScoreEl.innerHTML = score;
+}
 
 function spawnMonster(){
     setInterval(() => {
@@ -242,6 +229,8 @@ function animate(){
         const dist = Math.hypot(player.x - monster.x, player.y - monster.y)
         if(dist - monster.radius - player.radius < 1){
             cancelAnimationFrame(animationId);
+            modalEl.style.display = 'flex';
+            bigScoreEl.innerHTML = score;
         }
 
         projectiles.forEach((projectile,projectileIndex) => {
@@ -277,5 +266,10 @@ window.addEventListener('click', (event) => {
         projectiles.push(new Projectile(canvas.width/2,canvas.height/2,5,'white',velocity))
     })
 
-animate();
-spawnMonster();
+startGameBtn.addEventListener('click', () => {
+    init();
+    player.draw();
+    animate();
+    spawnMonster();
+    modalEl.style.display = 'none';
+})
